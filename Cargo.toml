@@ -1,0 +1,31 @@
+[package]
+name = "email_clients"
+version = "0.1.0"
+edition = "2021"
+authors = ["Amrit Ghimire"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+async-trait = "0.1.80"
+serde = { version = "1.0.198", features = ["derive"] }
+tokio = { version = "1.37.0", features = ["macros", "rt-multi-thread", "test-util"] }
+secrecy = {version =  "0.8.0", optional=true, features = ["serde"] }
+lettre = { version = "0.11.6", features = ["tracing", "tokio1-native-tls", "tokio1"], optional = true }
+thiserror = "1.0.58"
+log = "0.4.21"
+
+
+
+[features]
+default = ["terminal"]
+terminal = []
+memory = []
+smtp = ["dep:secrecy", "dep:lettre"]
+mailsend = []
+
+[dev-dependencies]
+tokio-test = "0.4.4"
+
+[package.metadata.cargo-udeps.ignore]
+development = ["tokio-test"]
