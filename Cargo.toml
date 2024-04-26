@@ -1,8 +1,15 @@
 [package]
-name = "email_clients"
+name = "email-clients"
 version = "0.1.0"
 edition = "2021"
 authors = ["Amrit Ghimire"]
+description = "This is library that provides user with easy to use email clients collection in rust."
+readme = "README.md"
+homepage = "https://github.com/amritghimire/email-clients"
+repository = "https://github.com/amritghimire/email-clients"
+keywords = ["email","client","library"]
+license = "MIT"
+categories = ["email"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
