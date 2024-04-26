@@ -1,6 +1,6 @@
 [package]
 name = "email-clients"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 authors = ["Amrit Ghimire"]
 description = "This is library that provides user with easy to use email clients collection in rust."
@@ -35,4 +35,5 @@ mailsend = []
 tokio-test = "0.4.4"
 
 [package.metadata.cargo-udeps.ignore]
+normal = ["log"]
 development = ["tokio-test"]

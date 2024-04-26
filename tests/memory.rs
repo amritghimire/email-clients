@@ -15,7 +15,7 @@ mod test {
         let (tx, rx) = mpsc::sync_channel(2);
 
         let email_client = EmailClient::Memory(MemoryClient::with_tx(
-            MemoryConfig::new("test@example.com".to_string()),
+            MemoryConfig::new("test@example.com"),
             tx,
         ));
         let email = EmailObject {

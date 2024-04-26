@@ -1,4 +1,4 @@
-name: CI
+name: Deny
 on: [push, pull_request]
 jobs:
   cargo-deny:
