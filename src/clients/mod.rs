@@ -1,11 +1,15 @@
 use crate::configuration::EmailConfiguration;
 use crate::traits::EmailTrait;
 
+#[cfg_attr(docsrs, doc(cfg(feature = "smtp")))]
 #[cfg(feature = "smtp")]
 pub mod smtp;
 
+#[cfg_attr(docsrs, doc(cfg(feature = "memory")))]
 #[cfg(feature = "memory")]
 pub mod memory;
+
+#[cfg_attr(docsrs, doc(cfg(feature = "terminal")))]
 #[cfg(feature = "terminal")]
 pub mod terminal;
 
@@ -16,28 +20,31 @@ pub mod terminal;
 ///
 /// To integrate SMTP email client:
 ///
-///```Rust
-///# use crate::configuration::EmailConfiguration::SMTP;
-///# use crate::crate::smtp::SmtpClient;
-///let config = SMTP {  /*specify your SMTP configuration here*/ };
+///```rust
+/// use email_clients::clients::EmailClient;
+/// use email_clients::clients::smtp::{SmtpClient, SmtpConfig};
+///let config = SmtpConfig::default();
 ///let smtp_email_client = EmailClient::Smtp(SmtpClient::new(config));
 ///```
 ///
 ///To integrate Terminal email client:
 ///
-///```Rust
-///# use crate::configuration::EmailConfiguration::Terminal;
-///# use crate::crate::terminal::TerminalClient;
-///let config = Terminal {  /*specify your Terminal configuration here*/ };
+///```rust
+///# use email_clients::clients::EmailClient;
+/// use email_clients::configuration::EmailConfiguration::Terminal;
+///# use email_clients::clients::terminal::{TerminalClient, TerminalConfig};
+///let config = TerminalConfig::default() ;
 ///let terminal_email_client = EmailClient::Terminal(TerminalClient::new(config));
 ///```
 ///
 ///To integrate Memory email client:
 ///
-///```Rust
-///# use crate::configuration::EmailConfiguration::Memory;
-///# use crate::crate::memory::MemoryClient;
-///let config = Memory {  /*specify your Memory configuration here*/ };
+///```rust
+/// use email_clients::clients::EmailClient;
+/// use email_clients::configuration::EmailConfiguration::Memory;
+/// use email_clients::clients::memory::{MemoryClient, MemoryConfig};
+///let config = MemoryConfig::default();
+///
 ///let memory_email_client = EmailClient::Memory(MemoryClient::new(config));
 ///```
 ///
