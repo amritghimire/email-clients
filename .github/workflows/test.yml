@@ -104,27 +104,33 @@ jobs:
   coverage:
     name: coverage
     runs-on: ubuntu-latest
-    container:
-      image: xd009642/tarpaulin:develop-nightly
-      options: --security-opt seccomp=unconfined
+
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v2
+
+      - name: Install rust
+        run: |
+          rustup default ${{ matrix.rust }}
+          rustup update --no-self-update ${{ matrix.rust }}
 
       - name: Setup cache
         uses: Swatinem/rust-cache@v2
 
       - name: Install postfix
         run: |
-          DEBIAN_FRONTEND=noninteractive apt-get update
-          DEBIAN_FRONTEND=noninteractive apt-get -y install postfix
+          DEBIAN_FRONTEND=noninteractive sudo apt-get update
+          DEBIAN_FRONTEND=noninteractive sudo apt-get -y install postfix
 
       - name: Run SMTP server
         run: smtp-sink 2525 1000&
 
+      - name: Install cargo tarpaulin
+        run: cargo install cargo-tarpaulin
+
       - name: Generate code coverage
         run: |
-          cargo +nightly tarpaulin --all-features --doc --tests --out xml
+          cargo tarpaulin --all-features --doc --tests --out xml
 
       - name: Upload to codecov.io
         uses: codecov/codecov-action@v2

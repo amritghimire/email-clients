@@ -5,7 +5,7 @@ mod test {
     use email_clients::email::{EmailAddress, EmailObject};
 
     #[tokio::test]
-    async fn send_email_saved_in_memory() {
+    async fn send_email_in_terminal() {
         let recipient_mail = "mail@example.com".to_string();
         let mail_subject = "New subject".to_string();
         let mail_body = "Body of email".to_string();
