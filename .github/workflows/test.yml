@@ -111,8 +111,9 @@ jobs:
 
       - name: Install rust
         run: |
-          rustup default ${{ matrix.rust }}
-          rustup update --no-self-update ${{ matrix.rust }}
+          rustup default stable
+          rustup update --no-self-update stable
+          rustup toolchain install nightly
 
       - name: Setup cache
         uses: Swatinem/rust-cache@v2
