@@ -1,7 +1,7 @@
 # Email Clients for rust
 
-[![Crates.io](https://img.shields.io/crates/v/email_clients.svg)](https://crates.io/crates/email_clients)
-[![Documentation](https://docs.rs/email_clients/badge.svg)](https://docs.rs/email_clients)
+[![Crates.io](https://img.shields.io/crates/v/email-clients.svg)](https://crates.io/crates/email-clients)
+[![Documentation](https://docs.rs/email-clients/badge.svg)](https://docs.rs/email-clients)
 
 ## Description
 
