@@ -15,7 +15,9 @@
 //!
 //!```rust
 //! use std::sync::mpsc;
+//! # #[cfg(any(feature = "mailersend", feature = "terminal", feature = "smtp", feature = "memory", feature = "document-features"))]
 //! use email_clients::clients::{EmailClient, get_email_client};
+//! # #[cfg(feature = "mailersend")]
 //! use email_clients::clients::mailersend::MailerSendConfig;
 //! # #[cfg(feature = "memory")]
 //! use email_clients::clients::memory::{MemoryClient, MemoryConfig};
