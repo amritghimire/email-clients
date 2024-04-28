@@ -13,6 +13,7 @@ This provides user with easy to use email clients collection in rust. You can ch
 - Terminal client for local development
 - Memory client for test cases
 - SMTP client with tls and starttls, local support
+- Mailersend configuration
 - Easy configuration management
 
 ## Installation
