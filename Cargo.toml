@@ -41,7 +41,7 @@ memory = []
 smtp = ["dep:secrecy", "dep:lettre"]
 
 ### Send email using mailersend
-mailersend = ["dep:reqwest"]
+mailersend = ["dep:secrecy", "dep:reqwest"]
 
 [dev-dependencies]
 tokio-test = "0.4.4"
