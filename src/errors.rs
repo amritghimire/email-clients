@@ -19,6 +19,6 @@ pub enum EmailError {
     #[error("Invalid api token for mailsend")]
     MailsendHeaderError(#[from] reqwest::header::InvalidHeaderValue),
     #[cfg(feature = "mailersend")]
-    #[error("Failed during making an API request")]
+    #[error("Failed during making an API request: {0}")]
     ReqwestError(#[from] reqwest::Error),
 }

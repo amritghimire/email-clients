@@ -11,15 +11,13 @@ mod test {
         let mail_subject = "New subject".to_string();
         let mail_body = "Body of email".to_string();
         let mail_html = "Body of email in <b>HTML</b>".to_string();
+        let from: EmailAddress = "test@example.com".into();
 
         let (tx, rx) = mpsc::sync_channel(2);
 
-        let email_client = EmailClient::Memory(MemoryClient::with_tx(
-            MemoryConfig::new("test@example.com"),
-            tx,
-        ));
+        let email_client = EmailClient::Memory(MemoryClient::with_tx(MemoryConfig::new(from), tx));
         let email = EmailObject {
-            sender: "test@example.com".to_string().into(),
+            sender: "test@example.com".into(),
             to: vec![EmailAddress {
                 name: "Mail".to_string(),
                 email: recipient_mail.clone(),

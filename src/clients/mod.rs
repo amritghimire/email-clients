@@ -13,6 +13,7 @@ pub mod memory;
 #[cfg(feature = "terminal")]
 pub mod terminal;
 
+#[cfg_attr(docsrs, doc(cfg(feature = "mailersend")))]
 #[cfg(feature = "mailersend")]
 pub mod mailersend;
 
@@ -51,6 +52,15 @@ pub mod mailersend;
 ///let memory_email_client = EmailClient::Memory(MemoryClient::new(config));
 ///```
 ///
+/// To integrate mailersend client:
+///
+///```rust
+/// use email_clients::clients::EmailClient;
+/// use email_clients::clients::mailersend::{MailerSendClient, MailerSendConfig};
+/// use email_clients::clients::memory::MemoryClient;
+///
+/// let config = MailerSendConfig::default().api_token("API_TOKEN");
+/// let mailersend_client = EmailClient::MailerSend(MailerSendClient::new(config));
 #[derive(Clone, Debug)]
 pub enum EmailClient {
     #[cfg(feature = "smtp")]
@@ -77,7 +87,7 @@ impl Default for EmailClient {
     /// ```rust
     /// # use email_clients::clients::EmailClient;
     /// let client = EmailClient::default();
-    /// assert_eq!(client.unwrap().get_sender(), "");
+    /// assert_eq!(client.unwrap().get_sender().to_string(), "");
     /// ```
     fn default() -> Self {
         EmailClient::Terminal(Default::default())
@@ -102,6 +112,34 @@ pub fn get_email_client(configuration: EmailConfiguration) -> EmailClient {
 }
 
 impl EmailClient {
+    /// Unwrap the `EmailClient` enum variant and convert it into a `Box<dyn EmailTrait + Send>`.
+    ///
+    /// This method allows us to obtain a Boxed trait object which implements
+    /// `EmailTrait` and `Send` from an instance of `EmailClient` regardless of its variant.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```rust
+    /// # use email_clients::clients::EmailClient;
+    /// # use email_clients::clients::smtp::{SmtpClient, SmtpConfig};
+    ///  use email_clients::email::EmailObject;
+    ///  # use email_clients::Result;
+    ///
+    /// # async fn run() -> Result<()> {
+    /// let config = SmtpConfig::default();
+    /// let smtp_email_client = EmailClient::Smtp(SmtpClient::new(config));
+    ///
+    /// // Unwrapping converts the specific variant into a Boxed trait object.
+    /// let unwrapped_client = smtp_email_client.unwrap();
+    ///
+    /// // Now we can use unwrapped_client directly to use methods of EmailTrait.
+    /// unwrapped_client.send_emails(EmailObject::default()).await?;
+    /// # Ok(())
+    /// # }
+    /// # fn main() {}
+    /// ```
     pub fn unwrap(self) -> Box<dyn EmailTrait + Send> {
         match self {
             #[cfg(feature = "smtp")]

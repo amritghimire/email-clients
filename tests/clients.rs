@@ -14,7 +14,7 @@ fn test_email_client_terminal() {
     let terminal_client = client.unwrap();
 
     let sender = terminal_client.get_sender();
-    assert_eq!(sender, "");
+    assert_eq!(sender.to_string(), "");
 }
 
 #[cfg(feature = "smtp")]
@@ -26,7 +26,7 @@ fn test_email_client_smtp() {
     let smtp_client = client.unwrap();
 
     let sender = smtp_client.get_sender();
-    assert_eq!(sender, "");
+    assert_eq!(sender.to_string(), "");
 }
 
 #[cfg(feature = "memory")]
@@ -38,5 +38,5 @@ fn test_email_client_memory() {
     let smtp_client = client.unwrap();
 
     let sender = smtp_client.get_sender();
-    assert_eq!(sender, "");
+    assert_eq!(sender.to_string(), "");
 }

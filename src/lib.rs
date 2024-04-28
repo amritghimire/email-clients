@@ -7,6 +7,7 @@
 //! * Memory client for test cases
 //! * SMTP client with tls and starttls, local support
 //! * Easy configuration management
+//! * Mailersend client with token and custom base url if needed.
 //!
 //! # Examples
 //!
@@ -15,6 +16,7 @@
 //!```rust
 //! use std::sync::mpsc;
 //! use email_clients::clients::{EmailClient, get_email_client};
+//! use email_clients::clients::mailersend::MailerSendConfig;
 //! # #[cfg(feature = "memory")]
 //! use email_clients::clients::memory::{MemoryClient, MemoryConfig};
 //! # #[cfg(feature = "smtp")]
@@ -25,7 +27,7 @@
 //! use email_clients::email::{EmailAddress, EmailObject};
 //!
 //! let email = EmailObject {
-//!   sender: "test@example.com".to_string().into(),
+//!   sender: "test@example.com".into(),
 //!   to: vec![EmailAddress { name: "Mail".to_string(), email: "to@example.com".to_string() }],
 //!   subject: "subject".to_string(),
 //!   plain: "plain body".to_string(),
@@ -44,6 +46,10 @@
 //! let (tx, rx) = mpsc::sync_channel(2);
 //! #[cfg(feature = "memory")]
 //! let memory_config: MemoryConfig = String::from("me@domain.com").into();
+//! // 4. Mailersend config (needs mailersend feature)
+//! #[cfg(feature = "mailersend")]
+//! let mailersend_config = MailerSendConfig::default().sender("sender@example.com").api_token("API_TOKEN");
+//!
 //! # #[cfg(feature = "terminal")]
 //! # {
 //! let email_configuration: EmailConfiguration = terminal_config.into(); // OR any of the other config

@@ -45,6 +45,7 @@ mailersend = ["dep:reqwest"]
 
 [dev-dependencies]
 tokio-test = "0.4.4"
+wiremock = "0.6.0"
 
 [package.metadata.cargo-udeps.ignore]
 normal = ["log"]
