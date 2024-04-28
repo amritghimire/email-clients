@@ -25,7 +25,7 @@
 //! use email_clients::email::{EmailAddress, EmailObject};
 //!
 //! let email = EmailObject {
-//!   sender: "test@example.com".to_string(),
+//!   sender: "test@example.com".to_string().into(),
 //!   to: vec![EmailAddress { name: "Mail".to_string(), email: "to@example.com".to_string() }],
 //!   subject: "subject".to_string(),
 //!   plain: "plain body".to_string(),

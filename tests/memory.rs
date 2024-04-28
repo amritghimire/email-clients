@@ -19,7 +19,7 @@ mod test {
             tx,
         ));
         let email = EmailObject {
-            sender: "test@example.com".to_string(),
+            sender: "test@example.com".to_string().into(),
             to: vec![EmailAddress {
                 name: "Mail".to_string(),
                 email: recipient_mail.clone(),
@@ -37,7 +37,7 @@ mod test {
 
         let email = rx.recv().unwrap();
 
-        assert_eq!(email.sender, "test@example.com");
+        assert_eq!(email.sender.email, "test@example.com");
         assert_eq!(email.to[0].email, recipient_mail);
         assert_eq!(email.subject, mail_subject);
         assert_eq!(email.plain, mail_body);

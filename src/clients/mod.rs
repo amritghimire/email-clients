@@ -13,6 +13,9 @@ pub mod memory;
 #[cfg(feature = "terminal")]
 pub mod terminal;
 
+#[cfg(feature = "mailersend")]
+pub mod mailersend;
+
 ///`EmailClient` Enum representing different types of email clients.
 ///Currently supported email clients: SMTP, Terminal, Memory.
 ///
@@ -56,6 +59,8 @@ pub enum EmailClient {
     Terminal(terminal::TerminalClient),
     #[cfg(feature = "memory")]
     Memory(memory::MemoryClient),
+    #[cfg(feature = "mailersend")]
+    MailerSend(mailersend::MailerSendClient),
 }
 
 #[cfg(feature = "terminal")]
@@ -89,6 +94,10 @@ pub fn get_email_client(configuration: EmailConfiguration) -> EmailClient {
         }
         #[cfg(feature = "memory")]
         EmailConfiguration::Memory(c) => EmailClient::Memory(memory::MemoryClient::new(c)),
+        #[cfg(feature = "mailersend")]
+        EmailConfiguration::Mailersend(c) => {
+            EmailClient::MailerSend(mailersend::MailerSendClient::new(c))
+        }
     }
 }
 
@@ -101,6 +110,8 @@ impl EmailClient {
             EmailClient::Terminal(c) => Box::new(c) as Box<dyn EmailTrait + Send>,
             #[cfg(feature = "memory")]
             EmailClient::Memory(c) => Box::new(c) as Box<dyn EmailTrait + Send>,
+            #[cfg(feature = "mailersend")]
+            EmailClient::MailerSend(c) => Box::new(c) as Box<dyn EmailTrait + Send>,
         }
     }
 }

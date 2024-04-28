@@ -7,6 +7,9 @@ use crate::clients::terminal;
 #[cfg(feature = "memory")]
 use crate::clients::memory;
 
+#[cfg(feature = "mailersend")]
+use crate::clients::mailersend;
+
 #[derive(Debug, Clone, serde::Deserialize)]
 pub enum EmailConfiguration {
     #[cfg(feature = "terminal")]
@@ -15,6 +18,8 @@ pub enum EmailConfiguration {
     SMTP(smtp::SmtpConfig), // Use smtp passwords and options (all config)
     #[cfg(feature = "memory")]
     Memory(memory::MemoryConfig), // Use in memory client
+    #[cfg(feature = "mailersend")]
+    Mailersend(mailersend::MailerSendConfig), // Use mailersend client
 }
 
 #[cfg(feature = "terminal")]

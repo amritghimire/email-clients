@@ -1,3 +1,4 @@
+use std::fmt::Display;
 #[cfg(feature = "smtp")]
 use crate::errors::EmailError;
 #[cfg(feature = "smtp")]
@@ -9,9 +10,19 @@ pub struct EmailAddress {
     pub email: String,
 }
 
+impl Display for EmailAddress {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        if self.name.is_empty() {
+            write!(f, "{}", self.email)
+        }else {
+            write!(f, "{} <{}>", self.name, self.email)
+        }
+    }
+}
+
 #[derive(serde::Serialize, serde::Deserialize, Clone, Debug, Default)]
 pub struct EmailObject {
-    pub sender: String,
+    pub sender: EmailAddress,
     pub to: Vec<EmailAddress>,
     pub subject: String,
     pub plain: String,
@@ -27,5 +38,14 @@ impl TryInto<Mailbox> for EmailAddress {
             name: Some(self.name),
             email: self.email.parse()?,
         })
+    }
+}
+
+impl From<String> for EmailAddress {
+    fn from(value: String) -> Self {
+        Self {
+            name: "".to_string(),
+            email: value,
+        }
     }
 }
