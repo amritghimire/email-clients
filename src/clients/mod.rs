@@ -46,42 +46,49 @@ pub mod mailersend;
 /// To integrate SMTP email client:
 ///
 ///```rust
+/// # #[cfg(feature = "smtp")]{
 /// use email_clients::clients::EmailClient;
 /// use email_clients::clients::smtp::{SmtpClient, SmtpConfig};
-///let config = SmtpConfig::default();
-///let smtp_email_client = EmailClient::Smtp(SmtpClient::new(config));
+/// let config = SmtpConfig::default();
+/// let smtp_email_client = EmailClient::Smtp(SmtpClient::new(config));
+/// # }
 ///```
 ///
 ///To integrate Terminal email client:
 ///
 ///```rust
-///# use email_clients::clients::EmailClient;
+/// # #[cfg(feature = "terminal")]{
+/// use email_clients::clients::EmailClient;
 /// use email_clients::configuration::EmailConfiguration::Terminal;
-///# use email_clients::clients::terminal::{TerminalClient, TerminalConfig};
-///let config = TerminalConfig::default() ;
-///let terminal_email_client = EmailClient::Terminal(TerminalClient::new(config));
+/// use email_clients::clients::terminal::{TerminalClient, TerminalConfig};
+/// let config = TerminalConfig::default() ;
+/// let terminal_email_client = EmailClient::Terminal(TerminalClient::new(config));
+/// # }
 ///```
 ///
 ///To integrate Memory email client:
 ///
 ///```rust
+/// # #[cfg(feature = "memory")]{
 /// use email_clients::clients::EmailClient;
 /// use email_clients::configuration::EmailConfiguration::Memory;
 /// use email_clients::clients::memory::{MemoryClient, MemoryConfig};
 ///let config = MemoryConfig::default();
 ///
 ///let memory_email_client = EmailClient::Memory(MemoryClient::new(config));
+/// # }
 ///```
 ///
 /// To integrate mailersend client:
 ///
 ///```rust
+/// # #[cfg(feature = "mailersend")]{
 /// use email_clients::clients::EmailClient;
 /// use email_clients::clients::mailersend::{MailerSendClient, MailerSendConfig};
-/// use email_clients::clients::memory::MemoryClient;
 ///
 /// let config = MailerSendConfig::default().api_token("API_TOKEN");
 /// let mailersend_client = EmailClient::MailerSend(MailerSendClient::new(config));
+/// # }
 #[derive(Clone, Debug)]
 pub enum EmailClient {
     #[cfg(feature = "smtp")]
@@ -157,6 +164,7 @@ impl EmailClient {
     /// Basic usage:
     ///
     /// ```rust
+    /// # #[cfg(feature = "smtp")]{
     /// # use email_clients::clients::EmailClient;
     /// # use email_clients::clients::smtp::{SmtpClient, SmtpConfig};
     ///  use email_clients::email::EmailObject;
@@ -172,6 +180,7 @@ impl EmailClient {
     /// // Now we can use unwrapped_client directly to use methods of EmailTrait.
     /// unwrapped_client.send_emails(EmailObject::default()).await?;
     /// # Ok(())
+    /// # }
     /// # }
     /// # fn main() {}
     /// ```

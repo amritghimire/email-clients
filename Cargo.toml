@@ -49,7 +49,7 @@ wiremock = "0.6.0"
 
 [package.metadata.cargo-udeps.ignore]
 normal = ["log"]
-development = ["tokio-test"]
+development = ["tokio-test", "wiremock"]
 
 # docs.rs-specific configuration
 [package.metadata.docs.rs]
