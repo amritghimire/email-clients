@@ -15,7 +15,7 @@ mod test {
         let mail_html = "Body of email in <b>HTML</b>".to_string();
 
         let smtp_config = SmtpConfig {
-            sender: "from@example.com".to_string(),
+            sender: "from@example.com".into(),
             relay: "127.0.0.1".to_string(),
             username: "".to_string(),
             password: Secret::from("".to_string()),
@@ -25,7 +25,7 @@ mod test {
         let email_configuration = EmailConfiguration::SMTP(smtp_config);
         let email_client = get_email_client(email_configuration);
         let email = EmailObject {
-            sender: "test@example.com".to_string(),
+            sender: "test@example.com".into(),
             to: vec![EmailAddress {
                 name: "Mail".to_string(),
                 email: recipient_mail.clone(),

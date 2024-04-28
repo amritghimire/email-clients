@@ -15,4 +15,10 @@ pub enum EmailError {
     SmtpError(#[from] lettre::transport::smtp::Error),
     #[error("Unexpected error: {0}")]
     UnexpectedError(String),
+    #[cfg(feature = "mailersend")]
+    #[error("Invalid api token for mailsend")]
+    MailsendHeaderError(#[from] reqwest::header::InvalidHeaderValue),
+    #[cfg(feature = "mailersend")]
+    #[error("Failed during making an API request: {0}")]
+    ReqwestError(#[from] reqwest::Error),
 }

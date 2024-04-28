@@ -1,11 +1,11 @@
 use crate::configuration::EmailConfiguration;
-use crate::email::EmailObject;
+use crate::email::{EmailAddress, EmailObject};
 use crate::traits::EmailTrait;
 use async_trait::async_trait;
 
 #[derive(Debug, Clone, serde::Deserialize, serde::Serialize, Default, PartialOrd, PartialEq)]
 pub struct TerminalConfig {
-    pub sender: String,
+    pub sender: EmailAddress,
 }
 
 impl From<String> for TerminalConfig {
@@ -22,16 +22,18 @@ impl From<String> for TerminalConfig {
     /// use email_clients::clients::terminal::TerminalConfig;
     /// let value = String::from("sender@example.com");
     /// let config = TerminalConfig::from(value);
-    /// assert_eq!(config.sender, "sender@example.com");
+    /// assert_eq!(config.sender.to_string(), "sender@example.com");
     /// ```
     fn from(value: String) -> Self {
-        Self { sender: value }
+        Self {
+            sender: value.as_str().into(),
+        }
     }
 }
 
 #[derive(Clone, Debug, Default, PartialOrd, PartialEq)]
 pub struct TerminalClient {
-    sender: String,
+    sender: EmailAddress,
 }
 
 impl From<TerminalConfig> for EmailConfiguration {
@@ -75,8 +77,8 @@ impl TerminalClient {
 
 #[async_trait]
 impl EmailTrait for TerminalClient {
-    fn get_sender(&self) -> String {
-        self.sender.to_string()
+    fn get_sender(&self) -> EmailAddress {
+        self.sender.clone()
     }
 
     async fn send_emails(&self, email: EmailObject) -> crate::Result<()> {

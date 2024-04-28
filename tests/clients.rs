@@ -1,8 +1,22 @@
+#[cfg(any(
+    feature = "mailersend",
+    feature = "terminal",
+    feature = "smtp",
+    feature = "memory",
+    feature = "document-features"
+))]
 use email_clients::clients::get_email_client;
 #[cfg(feature = "memory")]
 use email_clients::clients::memory::MemoryConfig;
 #[cfg(feature = "smtp")]
 use email_clients::clients::smtp::SmtpConfig;
+#[cfg(any(
+    feature = "mailersend",
+    feature = "terminal",
+    feature = "smtp",
+    feature = "memory",
+    feature = "document-features"
+))]
 use email_clients::configuration::EmailConfiguration;
 
 #[cfg(feature = "terminal")]
@@ -14,7 +28,7 @@ fn test_email_client_terminal() {
     let terminal_client = client.unwrap();
 
     let sender = terminal_client.get_sender();
-    assert_eq!(sender, "");
+    assert_eq!(sender.to_string(), "");
 }
 
 #[cfg(feature = "smtp")]
@@ -26,7 +40,7 @@ fn test_email_client_smtp() {
     let smtp_client = client.unwrap();
 
     let sender = smtp_client.get_sender();
-    assert_eq!(sender, "");
+    assert_eq!(sender.to_string(), "");
 }
 
 #[cfg(feature = "memory")]
@@ -38,5 +52,5 @@ fn test_email_client_memory() {
     let smtp_client = client.unwrap();
 
     let sender = smtp_client.get_sender();
-    assert_eq!(sender, "");
+    assert_eq!(sender.to_string(), "");
 }

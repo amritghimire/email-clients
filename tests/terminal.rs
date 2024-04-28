@@ -15,7 +15,7 @@ mod test {
         let email_client = get_email_client(terminal_configuration);
 
         let email = EmailObject {
-            sender: "test@example.com".to_string(),
+            sender: "test@example.com".into(),
             to: vec![EmailAddress {
                 name: "Mail".to_string(),
                 email: recipient_mail.clone(),

@@ -1,5 +1,5 @@
 use crate::configuration::EmailConfiguration;
-use crate::email::EmailObject;
+use crate::email::{EmailAddress, EmailObject};
 use crate::traits::EmailTrait;
 use async_trait::async_trait;
 use lettre::message::MultiPart;
@@ -21,7 +21,7 @@ pub enum TlsMode {
 }
 #[derive(Debug, Clone, serde::Deserialize)]
 pub struct SmtpConfig {
-    pub sender: String,
+    pub sender: EmailAddress,
     pub relay: String,
     pub username: String,
     pub password: Secret<String>,
@@ -32,7 +32,7 @@ pub struct SmtpConfig {
 impl Default for SmtpConfig {
     fn default() -> Self {
         Self {
-            sender: "".to_string(),
+            sender: "".into(),
             relay: "localhost".to_owned(),
             username: "".to_string(),
             port: SMTP_PORT,
@@ -49,10 +49,10 @@ impl SmtpConfig {
     /// use email_clients::clients::smtp::SmtpConfig;
     ///
     /// let mut smtp_config = SmtpConfig::default().sender("Test Sender");
-    /// assert_eq!(smtp_config.sender, "Test Sender");
+    /// assert_eq!(smtp_config.sender.to_string(), "Test Sender");
     /// ```
-    pub fn sender(mut self, value: impl AsRef<str>) -> Self {
-        self.sender = value.as_ref().to_string();
+    pub fn sender(mut self, value: impl Into<EmailAddress>) -> Self {
+        self.sender = value.into();
         self
     }
 
@@ -133,7 +133,7 @@ impl From<SmtpConfig> for EmailConfiguration {
     /// use email_clients::clients::smtp::{SmtpConfig, TlsMode};
     ///
     /// let smtp_config = SmtpConfig {
-    ///     sender: "Test Sender".to_string(),
+    ///     sender: "Test Sender".into(),
     ///     relay: "Test Relay".to_string(),
     ///     username: "Test User".to_string(),
     ///     password: Secret::new("Test Password".to_string()),
@@ -192,8 +192,8 @@ impl SmtpClient {
 
 #[async_trait]
 impl EmailTrait for SmtpClient {
-    fn get_sender(&self) -> String {
-        self.config.sender.to_string()
+    fn get_sender(&self) -> EmailAddress {
+        self.config.sender.clone()
     }
 
     async fn send_emails(&self, email: EmailObject) -> crate::Result<()> {
@@ -201,8 +201,8 @@ impl EmailTrait for SmtpClient {
         let email_body = MultiPart::alternative_plain_html(email.plain, email.html);
 
         let mut message_builder = Message::builder()
-            .from(self.config.sender.parse()?)
-            .reply_to(self.config.sender.parse()?);
+            .from(self.get_sender().try_into()?)
+            .reply_to(self.get_sender().try_into()?);
         for addr in email.to {
             message_builder = message_builder.to(addr.try_into()?)
         }

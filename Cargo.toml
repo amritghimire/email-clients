@@ -22,6 +22,7 @@ lettre = { version = "0.11.6", features = ["tracing", "tokio1-native-tls", "toki
 thiserror = "1.0.58"
 log = "0.4.21"
 document-features = { version = "0.2", optional = true }
+reqwest = { version = "0.12.4", optional = true, features = ["json"] }
 
 
 
@@ -39,15 +40,16 @@ memory = []
 ### Enable smtp client based on lettre.
 smtp = ["dep:secrecy", "dep:lettre"]
 
-### Upcoming feature for mailsend.
-mailsend = []
+### Send email using mailersend
+mailersend = ["dep:secrecy", "dep:reqwest"]
 
 [dev-dependencies]
 tokio-test = "0.4.4"
+wiremock = "0.6.0"
 
 [package.metadata.cargo-udeps.ignore]
 normal = ["log"]
-development = ["tokio-test"]
+development = ["tokio-test", "wiremock"]
 
 # docs.rs-specific configuration
 [package.metadata.docs.rs]

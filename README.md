@@ -28,7 +28,7 @@ Based on the email client you want to support, you need to initialize email conf
 ```rust
 async fn send_email() {
     let email = EmailObject {
-        sender: "test@example.com".to_string(),
+        sender: "test@example.com",
         to: vec![EmailAddress { name: "Mail".to_string(), email: "to@example.com".to_string() }],
         subject: "subject".to_string(),
         plain: "plain body".to_string(),

@@ -1,4 +1,18 @@
+#[cfg(any(
+    feature = "mailersend",
+    feature = "terminal",
+    feature = "smtp",
+    feature = "memory",
+    feature = "document-features"
+))]
 use crate::configuration::EmailConfiguration;
+#[cfg(any(
+    feature = "mailersend",
+    feature = "terminal",
+    feature = "smtp",
+    feature = "memory",
+    feature = "document-features"
+))]
 use crate::traits::EmailTrait;
 
 #[cfg_attr(docsrs, doc(cfg(feature = "smtp")))]
@@ -13,6 +27,17 @@ pub mod memory;
 #[cfg(feature = "terminal")]
 pub mod terminal;
 
+#[cfg_attr(docsrs, doc(cfg(feature = "mailersend")))]
+#[cfg(feature = "mailersend")]
+pub mod mailersend;
+
+#[cfg(any(
+    feature = "mailersend",
+    feature = "terminal",
+    feature = "smtp",
+    feature = "memory",
+    feature = "document-features"
+))]
 ///`EmailClient` Enum representing different types of email clients.
 ///Currently supported email clients: SMTP, Terminal, Memory.
 ///
@@ -21,33 +46,49 @@ pub mod terminal;
 /// To integrate SMTP email client:
 ///
 ///```rust
+/// # #[cfg(feature = "smtp")]{
 /// use email_clients::clients::EmailClient;
 /// use email_clients::clients::smtp::{SmtpClient, SmtpConfig};
-///let config = SmtpConfig::default();
-///let smtp_email_client = EmailClient::Smtp(SmtpClient::new(config));
+/// let config = SmtpConfig::default();
+/// let smtp_email_client = EmailClient::Smtp(SmtpClient::new(config));
+/// # }
 ///```
 ///
 ///To integrate Terminal email client:
 ///
 ///```rust
-///# use email_clients::clients::EmailClient;
+/// # #[cfg(feature = "terminal")]{
+/// use email_clients::clients::EmailClient;
 /// use email_clients::configuration::EmailConfiguration::Terminal;
-///# use email_clients::clients::terminal::{TerminalClient, TerminalConfig};
-///let config = TerminalConfig::default() ;
-///let terminal_email_client = EmailClient::Terminal(TerminalClient::new(config));
+/// use email_clients::clients::terminal::{TerminalClient, TerminalConfig};
+/// let config = TerminalConfig::default() ;
+/// let terminal_email_client = EmailClient::Terminal(TerminalClient::new(config));
+/// # }
 ///```
 ///
 ///To integrate Memory email client:
 ///
 ///```rust
+/// # #[cfg(feature = "memory")]{
 /// use email_clients::clients::EmailClient;
 /// use email_clients::configuration::EmailConfiguration::Memory;
 /// use email_clients::clients::memory::{MemoryClient, MemoryConfig};
 ///let config = MemoryConfig::default();
 ///
 ///let memory_email_client = EmailClient::Memory(MemoryClient::new(config));
+/// # }
 ///```
 ///
+/// To integrate mailersend client:
+///
+///```rust
+/// # #[cfg(feature = "mailersend")]{
+/// use email_clients::clients::EmailClient;
+/// use email_clients::clients::mailersend::{MailerSendClient, MailerSendConfig};
+///
+/// let config = MailerSendConfig::default().api_token("API_TOKEN");
+/// let mailersend_client = EmailClient::MailerSend(MailerSendClient::new(config));
+/// # }
 #[derive(Clone, Debug)]
 pub enum EmailClient {
     #[cfg(feature = "smtp")]
@@ -56,6 +97,8 @@ pub enum EmailClient {
     Terminal(terminal::TerminalClient),
     #[cfg(feature = "memory")]
     Memory(memory::MemoryClient),
+    #[cfg(feature = "mailersend")]
+    MailerSend(mailersend::MailerSendClient),
 }
 
 #[cfg(feature = "terminal")]
@@ -72,13 +115,20 @@ impl Default for EmailClient {
     /// ```rust
     /// # use email_clients::clients::EmailClient;
     /// let client = EmailClient::default();
-    /// assert_eq!(client.unwrap().get_sender(), "");
+    /// assert_eq!(client.unwrap().get_sender().to_string(), "");
     /// ```
     fn default() -> Self {
         EmailClient::Terminal(Default::default())
     }
 }
 
+#[cfg(any(
+    feature = "mailersend",
+    feature = "terminal",
+    feature = "smtp",
+    feature = "memory",
+    feature = "document-features"
+))]
 pub fn get_email_client(configuration: EmailConfiguration) -> EmailClient {
     match configuration {
         #[cfg(feature = "terminal")]
@@ -89,10 +139,51 @@ pub fn get_email_client(configuration: EmailConfiguration) -> EmailClient {
         }
         #[cfg(feature = "memory")]
         EmailConfiguration::Memory(c) => EmailClient::Memory(memory::MemoryClient::new(c)),
+        #[cfg(feature = "mailersend")]
+        EmailConfiguration::Mailersend(c) => {
+            EmailClient::MailerSend(mailersend::MailerSendClient::new(c))
+        }
     }
 }
 
+#[cfg(any(
+    feature = "mailersend",
+    feature = "terminal",
+    feature = "smtp",
+    feature = "memory",
+    feature = "document-features"
+))]
 impl EmailClient {
+    /// Unwrap the `EmailClient` enum variant and convert it into a `Box<dyn EmailTrait + Send>`.
+    ///
+    /// This method allows us to obtain a Boxed trait object which implements
+    /// `EmailTrait` and `Send` from an instance of `EmailClient` regardless of its variant.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```rust
+    /// # #[cfg(feature = "smtp")]{
+    /// # use email_clients::clients::EmailClient;
+    /// # use email_clients::clients::smtp::{SmtpClient, SmtpConfig};
+    ///  use email_clients::email::EmailObject;
+    ///  # use email_clients::Result;
+    ///
+    /// # async fn run() -> Result<()> {
+    /// let config = SmtpConfig::default();
+    /// let smtp_email_client = EmailClient::Smtp(SmtpClient::new(config));
+    ///
+    /// // Unwrapping converts the specific variant into a Boxed trait object.
+    /// let unwrapped_client = smtp_email_client.unwrap();
+    ///
+    /// // Now we can use unwrapped_client directly to use methods of EmailTrait.
+    /// unwrapped_client.send_emails(EmailObject::default()).await?;
+    /// # Ok(())
+    /// # }
+    /// # }
+    /// # fn main() {}
+    /// ```
     pub fn unwrap(self) -> Box<dyn EmailTrait + Send> {
         match self {
             #[cfg(feature = "smtp")]
@@ -101,6 +192,8 @@ impl EmailClient {
             EmailClient::Terminal(c) => Box::new(c) as Box<dyn EmailTrait + Send>,
             #[cfg(feature = "memory")]
             EmailClient::Memory(c) => Box::new(c) as Box<dyn EmailTrait + Send>,
+            #[cfg(feature = "mailersend")]
+            EmailClient::MailerSend(c) => Box::new(c) as Box<dyn EmailTrait + Send>,
         }
     }
 }

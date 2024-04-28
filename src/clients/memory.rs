@@ -3,13 +3,13 @@ use async_trait::async_trait;
 use std::sync::mpsc;
 use std::sync::mpsc::SyncSender;
 
-use crate::email::EmailObject;
+use crate::email::{EmailAddress, EmailObject};
 use crate::errors::EmailError;
 use crate::traits::EmailTrait;
 
 #[derive(Debug, Clone, serde::Deserialize, serde::Serialize, Default, PartialOrd, PartialEq)]
 pub struct MemoryConfig {
-    pub sender: String,
+    pub sender: EmailAddress,
 }
 
 impl MemoryConfig {
@@ -26,11 +26,11 @@ impl MemoryConfig {
     /// use email_clients::clients::memory::MemoryConfig;
     ///
     /// let config = MemoryConfig::new("sender@example.com");
-    /// assert_eq!(config.sender, "sender@example.com");
+    /// assert_eq!(config.sender.to_string(), "sender@example.com");
     /// ```
-    pub fn new(sender: impl AsRef<str>) -> Self {
+    pub fn new(sender: impl Into<EmailAddress>) -> Self {
         Self {
-            sender: sender.as_ref().to_string(),
+            sender: sender.into(),
         }
     }
 }
@@ -49,10 +49,10 @@ impl From<String> for MemoryConfig {
     /// use email_clients::clients::memory::MemoryConfig;
     /// let value = String::from("sender@example.com");
     /// let config = MemoryConfig::from(value);
-    /// assert_eq!(config.sender, "sender@example.com");
+    /// assert_eq!(config.sender.to_string(), "sender@example.com");
     /// ```
     fn from(value: String) -> Self {
-        Self::new(value)
+        Self::new(value.as_str())
     }
 }
 
@@ -70,7 +70,7 @@ impl From<MemoryConfig> for EmailConfiguration {
     /// #
     /// # match email_config {
     /// #    EmailConfiguration::Memory(mc) => {
-    /// #       assert_eq!(mc.sender, "sender@example.com");
+    /// #       assert_eq!(mc.sender.to_string(), "sender@example.com");
     /// #   },
     /// #    _ => panic!("Invalid conversion"),
     /// # }
@@ -82,7 +82,7 @@ impl From<MemoryConfig> for EmailConfiguration {
 
 #[derive(Clone, Debug)]
 pub struct MemoryClient {
-    sender: String,
+    sender: EmailAddress,
     tx: SyncSender<EmailObject>,
 }
 
@@ -103,12 +103,12 @@ impl Default for MemoryClient {
     ///
     /// let default_client = MemoryClient::default();
     /// // Gets the default sender which is an empty string
-    /// assert_eq!(default_client.get_sender(), "");
+    /// assert_eq!(default_client.get_sender().to_string(), "");
     /// ```
     fn default() -> Self {
         let (tx, _) = mpsc::sync_channel(5 /* usize */);
         Self {
-            sender: "".to_string(),
+            sender: "".into(),
             tx,
         }
     }
@@ -130,7 +130,7 @@ impl MemoryClient {
     ///
     /// let config = MemoryConfig::new("sender@example.com");
     /// let client = MemoryClient::new(config);
-    /// assert_eq!(client.get_sender(), "sender@example.com");
+    /// assert_eq!(client.get_sender().to_string(), "sender@example.com");
     /// ```
     pub fn new(config: MemoryConfig) -> Self {
         let (tx, _) = mpsc::sync_channel(5 /* usize */);
@@ -160,7 +160,7 @@ impl MemoryClient {
     /// let config = MemoryConfig::new("sender@example.com");
     /// let (tx, rx) = sync_channel(2);
     /// let client = MemoryClient::with_tx(config, tx.clone());
-    /// assert_eq!(client.get_sender(), "sender@example.com");
+    /// assert_eq!(client.get_sender().to_string(), "sender@example.com");
     /// ```
     pub fn with_tx(config: MemoryConfig, tx: SyncSender<EmailObject>) -> Self {
         Self {
@@ -172,10 +172,26 @@ impl MemoryClient {
 
 #[async_trait]
 impl EmailTrait for MemoryClient {
-    fn get_sender(&self) -> String {
-        self.sender.to_string()
+    /// Returns the sender email address used for the `MemoryClient`.
+    ///
+    /// # Returns
+    /// An `EmailAddress` that is used as the sender's email in the `MemoryClient`.
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// # use email_clients::clients::memory::{MemoryConfig, MemoryClient};
+    /// # use email_clients::traits::EmailTrait;
+    ///
+    /// let config = MemoryConfig::new("sender@example.com");  
+    /// let client = MemoryClient::new(config);
+    /// assert_eq!(client.get_sender().to_string(), "sender@example.com");
+    /// ```
+    fn get_sender(&self) -> EmailAddress {
+        self.sender.clone()
     }
 
+    /// Sends email from memory client.
     async fn send_emails(&self, email: EmailObject) -> crate::Result<()> {
         self.tx
             .send(email)
