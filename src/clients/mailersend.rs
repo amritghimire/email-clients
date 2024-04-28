@@ -13,7 +13,6 @@ fn default_base_url() -> String {
     BASE_URL.to_string()
 }
 
-
 /// `MailerSendConfig` structure that includes sender, base_url, and api_token.
 ///
 /// ```rust
