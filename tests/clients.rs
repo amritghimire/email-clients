@@ -1,10 +1,22 @@
-#[cfg(any(feature = "mailersend", feature = "terminal", feature = "smtp", feature = "memory", feature = "document-features"))]
+#[cfg(any(
+    feature = "mailersend",
+    feature = "terminal",
+    feature = "smtp",
+    feature = "memory",
+    feature = "document-features"
+))]
 use email_clients::clients::get_email_client;
 #[cfg(feature = "memory")]
 use email_clients::clients::memory::MemoryConfig;
 #[cfg(feature = "smtp")]
 use email_clients::clients::smtp::SmtpConfig;
-#[cfg(any(feature = "mailersend", feature = "terminal", feature = "smtp", feature = "memory", feature = "document-features"))]
+#[cfg(any(
+    feature = "mailersend",
+    feature = "terminal",
+    feature = "smtp",
+    feature = "memory",
+    feature = "document-features"
+))]
 use email_clients::configuration::EmailConfiguration;
 
 #[cfg(feature = "terminal")]

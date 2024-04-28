@@ -1,6 +1,18 @@
-#[cfg(any(feature = "mailersend", feature = "terminal", feature = "smtp", feature = "memory", feature = "document-features"))]
+#[cfg(any(
+    feature = "mailersend",
+    feature = "terminal",
+    feature = "smtp",
+    feature = "memory",
+    feature = "document-features"
+))]
 use crate::configuration::EmailConfiguration;
-#[cfg(any(feature = "mailersend", feature = "terminal", feature = "smtp", feature = "memory", feature = "document-features"))]
+#[cfg(any(
+    feature = "mailersend",
+    feature = "terminal",
+    feature = "smtp",
+    feature = "memory",
+    feature = "document-features"
+))]
 use crate::traits::EmailTrait;
 
 #[cfg_attr(docsrs, doc(cfg(feature = "smtp")))]
@@ -19,7 +31,13 @@ pub mod terminal;
 #[cfg(feature = "mailersend")]
 pub mod mailersend;
 
-#[cfg(any(feature = "mailersend", feature = "terminal", feature = "smtp", feature = "memory", feature = "document-features"))]
+#[cfg(any(
+    feature = "mailersend",
+    feature = "terminal",
+    feature = "smtp",
+    feature = "memory",
+    feature = "document-features"
+))]
 ///`EmailClient` Enum representing different types of email clients.
 ///Currently supported email clients: SMTP, Terminal, Memory.
 ///
@@ -97,7 +115,13 @@ impl Default for EmailClient {
     }
 }
 
-#[cfg(any(feature = "mailersend", feature = "terminal", feature = "smtp", feature = "memory", feature = "document-features"))]
+#[cfg(any(
+    feature = "mailersend",
+    feature = "terminal",
+    feature = "smtp",
+    feature = "memory",
+    feature = "document-features"
+))]
 pub fn get_email_client(configuration: EmailConfiguration) -> EmailClient {
     match configuration {
         #[cfg(feature = "terminal")]
@@ -115,7 +139,13 @@ pub fn get_email_client(configuration: EmailConfiguration) -> EmailClient {
     }
 }
 
-#[cfg(any(feature = "mailersend", feature = "terminal", feature = "smtp", feature = "memory", feature = "document-features"))]
+#[cfg(any(
+    feature = "mailersend",
+    feature = "terminal",
+    feature = "smtp",
+    feature = "memory",
+    feature = "document-features"
+))]
 impl EmailClient {
     /// Unwrap the `EmailClient` enum variant and convert it into a `Box<dyn EmailTrait + Send>`.
     ///
