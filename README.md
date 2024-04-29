@@ -2,6 +2,7 @@
 
 [![Crates.io](https://img.shields.io/crates/v/email-clients.svg)](https://crates.io/crates/email-clients)
 [![Documentation](https://docs.rs/email-clients/badge.svg)](https://docs.rs/email-clients)
+[![codecov](https://codecov.io/gh/amritghimire/email-clients/branch/master/graph/badge.svg?token=PDN1QX9TVO)](https://codecov.io/gh/amritghimire/email-clients)
 
 ## Description
 
